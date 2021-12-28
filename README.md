@@ -3,9 +3,9 @@
 matwlib is a C++ library to interact with symbolic mathematics software through a common interface.
 
 ## Dependencies
-   Boost
-   LibXML2
-   MATIO (https://github.com/tbeu/matio) to read/write Matlab .mat files
+   * Boost
+   * LibXML2
+   * MATIO (https://github.com/tbeu/matio) to read/write Matlab .mat files
 
 ## Usage
    See tests/ directory for basic functionality tests of the library and applications/ for more extended examples
