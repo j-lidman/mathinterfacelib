@@ -6,13 +6,13 @@
 #include <stdexcept>
 #include <string>
 
-#include "mathinterfacelib.h"
+#include "matwlib.h"
 
 #define OCTAVE_USE_INTERPRETER_BY_DEFAULT true
 
 class Matrix;
 
-namespace MathInterfaceLib {
+namespace MatWLib {
 
    typedef Matrix OCT_MAT_T;
    typedef Matrix OCT_VEC_T;

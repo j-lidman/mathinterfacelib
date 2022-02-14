@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
 
-#include "matwlib.h"
+#include "mathinterfacelib.h"
 #include "MATLAB_Engine.h"
 #include "Eigen_Engine.h"
 
 using namespace std;
-using namespace MatWLib;
+using namespace MathInterfaceLib;
 
 //"matlab" must be accessible from $PATH
 
@@ -26,7 +26,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
      readResults = true;
      try {
          d = sdi.template readVar<double>("test");
-     } catch(MatWlibException e) {
+     } catch(MathInterfacelibException e) {
          if(!expectExceptionOnRead)
             throw e;
          else
@@ -43,7 +43,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
      readResults = true;
      try {
          d = sdi.template readVar<double>("test");
-     } catch(MatWlibException e) {
+     } catch(MathInterfacelibException e) {
          if(!expectExceptionOnRead)
             throw e;
          else
@@ -73,7 +73,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
        readResults = true;
        try {
            dstDblArr = sdi.template readVar<double>("arrDbl", szDims);
-       } catch(MatWlibException e) {
+       } catch(MathInterfacelibException e) {
            if(!expectExceptionOnRead)
               throw e;
            else
@@ -99,7 +99,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
        readResults = true;
        try {
            dstDblArr = sdi.template readVar<double>("vecDbl", szDims);
-       } catch(MatWlibException e) {
+       } catch(MathInterfacelibException e) {
            if(!expectExceptionOnRead)
               throw e;
            else
@@ -126,7 +126,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
        readResults = true;
        try {
            dstIntArr = sdi.template readVar<size_t>("arrInt", szDims);
-       } catch(MatWlibException e) {
+       } catch(MathInterfacelibException e) {
            if(!expectExceptionOnRead)
               throw e;
            else
@@ -152,7 +152,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
        readResults = true;
        try {
            dstIntArr = sdi.template readVar<size_t>("vecInt", szDims);
-       } catch(MatWlibException e) {
+       } catch(MathInterfacelibException e) {
            if(!expectExceptionOnRead)
               throw e;
            else
@@ -180,7 +180,7 @@ template<class STATE_T> int basic_statetest(STATE_T *s, bool expectExceptionOnRe
      readResults = true;
      try {
          str = sdi.template readVar<std::string>("teststr");
-     } catch(MatWlibException e) {
+     } catch(MathInterfacelibException e) {
          if(!expectExceptionOnRead)
             throw e;  
          else
@@ -245,7 +245,7 @@ bool functionSumArray(const std::vector<Value *> &inputValues, std::vector<Value
             return out;
          } else {
             if(inA->arrSize != inB->arrSize)
-               throw MatWlibException("Array size of inputs must be same");
+               throw MathInterfacelibException("Array size of inputs must be same");
             Value_Array *arrDst = new Value_Array();
             for(size_t i = 0; i < inA->arrSize; i++)
                 arrDst->addElement( funcSum(getArg(inA, i), getArg(inB, i)) );
@@ -305,18 +305,18 @@ int function_test(State *s) {
      vecInputs.clear();
      vecOutputs.clear();*/
    //Print "Hello world
-     sei->execute("matwlibFunc('printString', 'Hello world');");
+     sei->execute("mathinterfacelibFunc('printString', 'Hello world');");
    //Sum 13+5 and (13+5)+3.5
-     sei->execute("a = matwlibFunc('sumArray', 13, 5);");
-     sei->execute("a = matwlibFunc('sumArray', a, 3.5);");
+     sei->execute("a = mathinterfacelibFunc('sumArray', 13, 5);");
+     sei->execute("a = mathinterfacelibFunc('sumArray', a, 3.5);");
    //Sum [1 2 3 4] + [5 6 7 8]
-     sei->execute("b = matwlibFunc('sumArray', [1 2 3 4], [5 6 7 8])");
+     sei->execute("b = mathinterfacelibFunc('sumArray', [1 2 3 4], [5 6 7 8])");
    //Sum [1 2 3 4; 5 6 7 8] + [5 6 7 8; 1 2 3 4]
-     sei->execute("c = matwlibFunc('sumArray', [1 2 3 4; 5 6 7 8], [5 6 7 8; 1 2 3 4])");
+     sei->execute("c = mathinterfacelibFunc('sumArray', [1 2 3 4; 5 6 7 8], [5 6 7 8; 1 2 3 4])");
    //Sum a+b: a(1) = [1 2 3 4; 5 6 7 8], a(2) = [5 6 7 8; 1 2 3 4], b(1) = [5 6 7 8; 1 2 3 4], b(2) = [1 2 3 4; 5 6 7 8]  
      sei->execute("dx = cat(3, [1 2 3 4; 5 6 7 8], [5 6 7 8; 1 2 3 4])");
      sei->execute("dy = cat(3, [1 2 3 4; 5 6 7 8], [5 6 7 8; 1 2 3 4]);");
-     sei->execute("d = matwlibFunc('sumArray', dx, dy)");
+     sei->execute("d = mathinterfacelibFunc('sumArray', dx, dy)");
    //Sum struct {0, 0, 0}+{1, 1, 1}
      //s->execute(2, "a = mexFunc('sumStruct', {0,0,0}, {1,1,1});");
 
@@ -329,7 +329,7 @@ int main(int argc, char *argv[]) {
      #if defined(HAS_MATLAB)
       {
         cout << "Testing MATLAB engine..." << endl;
-        State *s = init_engine(MatWLib::ENGINE_MATLAB, "/home/jacob/Tools/MATLAB/R2017a/bin/glnxa64");
+        State *s = init_engine(MathInterfaceLib::ENGINE_MATLAB, "/home/jacob/Tools/MATLAB/R2017a/bin/glnxa64");
         rc = basic_statetest<MATLAB_State>(dynamic_cast<MATLAB_State *>(s), false);
         if(rc != 0)
            return rc;
@@ -345,7 +345,7 @@ int main(int argc, char *argv[]) {
      #if defined(HAS_EIGEN)
       {
         cout << "Testing Eigen engine..." << endl;
-        State *s = init_engine(MatWLib::ENGINE_EIGEN, "");
+        State *s = init_engine(MathInterfaceLib::ENGINE_EIGEN, "");
         rc = basic_statetest<Eigen_State>(dynamic_cast<Eigen_State *>(s), false);
         if(rc != 0)
            return rc;

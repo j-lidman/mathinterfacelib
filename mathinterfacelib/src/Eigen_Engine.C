@@ -25,7 +25,7 @@ using namespace boost;
 using namespace boost::interprocess;
 namespace qi = boost::spirit::qi;
 
-namespace MathInterfaceLib {
+namespace MatWLib {
    /*Eigen_State *init_eigen_engine() {
       return new Eigen_State();
    }
@@ -50,25 +50,25 @@ namespace MathInterfaceLib {
    EIGEN_MAT_T &Eigen_State::getMat(std::string varName) {
      std::map<std::string, EIGEN_MAT_T>::iterator it;
      if((it = mapMatrices.find(varName)) == mapMatrices.end())
-         throw MathInterfacelibException("No matrix variable with this name has been defined");
+         throw MatWlibException("No matrix variable with this name has been defined");
      return it->second;
    }
    const EIGEN_MAT_T &Eigen_State::getMat(std::string varName) const {
      std::map<std::string, EIGEN_MAT_T>::const_iterator it;
      if((it = mapMatrices.find(varName)) == mapMatrices.end())
-         throw MathInterfacelibException("No matrix variable with this name has been defined");
+         throw MatWlibException("No matrix variable with this name has been defined");
      return it->second;
    }
    EIGEN_VEC_T &Eigen_State::getVec(std::string varName) {
      std::map<std::string, EIGEN_VEC_T>::iterator it;
      if((it = mapVectors.find(varName)) == mapVectors.end())
-         throw MathInterfacelibException("No vector variable with this name has been defined");
+         throw MatWlibException("No vector variable with this name has been defined");
      return it->second;
    }
    const EIGEN_VEC_T &Eigen_State::getVec(std::string varName) const {
      std::map<std::string, EIGEN_VEC_T>::const_iterator it;
      if((it = mapVectors.find(varName)) == mapVectors.end())
-         throw MathInterfacelibException("No vector variable with this name has been defined");
+         throw MatWlibException("No vector variable with this name has been defined");
      return it->second;
    }
 
@@ -112,7 +112,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opAdd(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar0, const Eigen_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) + getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -120,7 +120,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opSub(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar0, const Eigen_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) - getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -128,7 +128,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opMul(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar0, const Eigen_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) * getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -139,7 +139,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opNeg(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar) {
      try {
          getMat(dstVar) = -getMat(srcVar);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -147,7 +147,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opConj(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar) {
      try {
          getMat(dstVar) = getMat(srcVar).conjugate();
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -155,7 +155,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opTrans(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar) {
      try {
          getMat(dstVar) = getMat(srcVar).transpose();
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -163,7 +163,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opInverse(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar) {
      try {
          getMat(dstVar) = getMat(srcVar).inverse();
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -172,7 +172,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opScale(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar, const double c) {
      try {
          getMat(dstVar) = getMat(srcVar) * c;
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -180,7 +180,7 @@ namespace MathInterfaceLib {
    bool Eigen_State::opTranslate(const Eigen_State::NAME dstVar, const Eigen_State::NAME srcVar, const double c) {
      try {
          getMat(dstVar) = getMat(srcVar) + c*EIGEN_MAT_T::Ones(getMat(srcVar).rows(), getMat(srcVar).cols());
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -286,7 +286,7 @@ namespace MathInterfaceLib {
    template<> double toDouble<Eigen_State>(Eigen_State &s, const Eigen_State::NAME src) {
      EIGEN_MAT_T &v = s.getVarMat(src);
      if((v.rows() != 1) && (v.cols() != 1))
-        throw MathInterfacelibException("Matrix is not (1,1)");
+        throw MatWlibException("Matrix is not (1,1)");
      return v(1,1);
    }
    template<> bool row<Eigen_State>(Eigen_State &s, const Eigen_State::NAME dst, const Eigen_State::NAME srcVar, size_t r) {
@@ -388,7 +388,7 @@ namespace MathInterfaceLib {
      }
      template<> double toDouble<EIGEN_ROW_VEC_T>(const VV<EIGEN_ROW_VEC_T> &dst) {
        if((dst.getV().rows() != 1) && (dst.getV().cols() != 1))
-          throw MathInterfacelibException("Matrix is not (1,1)");
+          throw MatWlibException("Matrix is not (1,1)");
        return dst.getV()(1,1);
      }
      template<> double elem(const VV<EIGEN_ROW_VEC_T> &src, size_t i) {return src.getV()(i);} 
@@ -481,7 +481,7 @@ namespace MathInterfaceLib {
      }
      template<> double toDouble<EIGEN_COL_VEC_T>(const VV<EIGEN_COL_VEC_T> &dst) {
        if((dst.getV().rows() != 1) && (dst.getV().cols() != 1))
-          throw MathInterfacelibException("Matrix is not (1,1)");
+          throw MatWlibException("Matrix is not (1,1)");
        return dst.getV()(1,1);
      }
      template<> double elem(const VV<EIGEN_COL_VEC_T> &src, size_t i) {return src.getV()(i);} 
@@ -673,7 +673,7 @@ namespace MathInterfaceLib {
 
      template<> double toDouble<EIGEN_MAT_T>(const MV<EIGEN_MAT_T> &dst) {
        if((dst.getV().rows() != 1) && (dst.getV().cols() != 1))
-          throw MathInterfacelibException("Matrix is not (1,1)");
+          throw MatWlibException("Matrix is not (1,1)");
        return dst.getV()(1,1);
      }
      template<> VV<EIGEN_ROW_VEC_T> row<EIGEN_MAT_T,EIGEN_ROW_VEC_T>(const MV<EIGEN_MAT_T> &src, size_t r) {return VV<EIGEN_ROW_VEC_T>(src.getV().block(r,1,1,src.getV().cols()));} 

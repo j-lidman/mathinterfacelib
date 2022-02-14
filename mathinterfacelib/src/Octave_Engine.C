@@ -24,7 +24,7 @@
 using namespace std;
 using namespace boost;
 
-namespace MathInterfaceLib {
+namespace MatWLib {
    Octave_State *init_octave_state_engine(bool useInterpreter) {
       if(useInterpreter)
          return new Octave_StateInterpreter();
@@ -71,25 +71,25 @@ namespace MathInterfaceLib {
    OCT_MAT_T &Octave_StateBasic::getMat(std::string varName) {
      std::map<std::string, OCT_MAT_T>::iterator it;
      if((it = mapMatrices.find(varName)) == mapMatrices.end())
-         throw MathInterfacelibException("No matrix variable with this name has been defined");
+         throw MatWlibException("No matrix variable with this name has been defined");
      return it->second;
    }
    const OCT_MAT_T &Octave_StateBasic::getMat(std::string varName) const {
      std::map<std::string, OCT_MAT_T>::const_iterator it;
      if((it = mapMatrices.find(varName)) == mapMatrices.end())
-         throw MathInterfacelibException("No matrix variable with this name has been defined");
+         throw MatWlibException("No matrix variable with this name has been defined");
      return it->second;
    }
    OCT_VEC_T &Octave_StateBasic::getVec(std::string varName) {
      std::map<std::string, OCT_VEC_T>::iterator it;
      if((it = mapVectors.find(varName)) == mapVectors.end())
-         throw MathInterfacelibException("No vector variable with this name has been defined");
+         throw MatWlibException("No vector variable with this name has been defined");
      return it->second;
    }
    const OCT_VEC_T &Octave_StateBasic::getVec(std::string varName) const {
      std::map<std::string, OCT_VEC_T>::const_iterator it;
      if((it = mapVectors.find(varName)) == mapVectors.end())
-         throw MathInterfacelibException("No vector variable with this name has been defined");
+         throw MatWlibException("No vector variable with this name has been defined");
      return it->second;
    }
 
@@ -189,7 +189,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opAdd(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) + getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -197,7 +197,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opSub(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) - getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -205,7 +205,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opMul(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
          getMat(dstVar) = getMat(srcVar0) * getMat(srcVar1);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -216,7 +216,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opNeg(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
          getMat(dstVar) = -getMat(srcVar);
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -224,7 +224,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opTrans(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
          //getMat(dstVar) = getMat(srcVar).transpose();
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -236,7 +236,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opInverse(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
          //getMat(dstVar) = getMat(srcVar).inverse();
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -245,7 +245,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opScale(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar, const double c) {
      try {
          getMat(dstVar) = getMat(srcVar) * c;
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -253,7 +253,7 @@ namespace MathInterfaceLib {
    bool Octave_StateBasic::opTranslate(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar, const double c) {
      try {
          getMat(dstVar) = getMat(srcVar) + c;
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -343,7 +343,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opAdd(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -351,7 +351,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opSub(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -359,7 +359,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opMul(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar0, const Octave_State::NAME srcVar1) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -370,7 +370,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opNeg(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -378,7 +378,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opConj(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -386,7 +386,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opTrans(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -394,7 +394,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opInverse(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -403,7 +403,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opScale(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar, const double c) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -411,7 +411,7 @@ namespace MathInterfaceLib {
    bool Octave_StateInterpreter::opTranslate(const Octave_State::NAME dstVar, const Octave_State::NAME srcVar, const double c) {
      try {
 
-     } catch (MathInterfacelibException e) {
+     } catch (MatWlibException e) {
          return false;
      }
      return true;
@@ -746,7 +746,7 @@ namespace MathInterfaceLib {
      }
      template<> double toDouble<OCT_VEC_T>(const VV<OCT_VEC_T> &dst) {
        if((dst.getV().rows() != 1) && (dst.getV().cols() != 1))
-          throw MathInterfacelibException("Matrix is not (1,1)");
+          throw MatWlibException("Matrix is not (1,1)");
        return dst.getV()(1,1);
      }
      template<> double elem(const VV<OCT_VEC_T> &src, size_t i) {return src.getV()(i);} 
@@ -811,7 +811,7 @@ namespace MathInterfaceLib {
 
      template<> double toDouble<OCT_MAT_T>(const MV<OCT_MAT_T> &dst) {
        if((dst.getV().rows() != 1) && (dst.getV().cols() != 1))
-          throw MathInterfacelibException("Matrix is not (1,1)");
+          throw MatWlibException("Matrix is not (1,1)");
        return dst.getV()(1,1);
      }
      template<> MV<OCT_MAT_T> row<OCT_MAT_T>(const MV<OCT_MAT_T> &src, size_t r) {return MV<OCT_MAT_T>(src.getV().block(r,1,1,src.getV().cols()));} 

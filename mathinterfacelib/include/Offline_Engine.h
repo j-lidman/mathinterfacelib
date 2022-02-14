@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include "mathinterfacelib.h"
+#include "matwlib.h"
 
 #define USE_XML
 
@@ -13,7 +13,7 @@
    #include <libxml/tree.h>
 #endif
 
-namespace MathInterfaceLib {
+namespace MatWLib {
 
    class Offline_State : public State,
                          public FunctionInterface,

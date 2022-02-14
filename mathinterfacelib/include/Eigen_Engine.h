@@ -6,11 +6,11 @@
 #include <stdexcept>
 #include <string>
 
-#include "mathinterfacelib.h"
+#include "matwlib.h"
 
 #include <Eigen/Dense>
 
-namespace MathInterfaceLib {
+namespace MatWLib {
 
    typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> EIGEN_MAT_T; //Eigen::MatrixXd
    typedef Eigen::Matrix<double,1,Eigen::Dynamic> EIGEN_ROW_VEC_T; //= Eigen::VectorXd = Eigen::RowVectorXd

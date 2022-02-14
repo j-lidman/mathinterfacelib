@@ -1,11 +1,11 @@
-# mathinterface library
+# matwlib
 
-mathinterfacelib is a C++ library to interact with symbolic mathematics software through a common interface.
+matwlib is a C++ library to interact with symbolic mathematics software through a common interface.
 
 ## Dependencies
-   * Boost (https://www.boost.org/)
-   * LibXML2 (https://gitlab.gnome.org/GNOME/libxml2) - Required by Offline engine (XML mode).
-   * MATIO (https://github.com/tbeu/matio) - Required by Matlab engine.
+   * Boost
+   * LibXML2
+   * MATIO (https://github.com/tbeu/matio) to read/write Matlab .mat files
 
 ## Usage
    See tests/ directory for basic functionality tests of the library and applications/ for more extended examples

@@ -13,8 +13,8 @@ CFLAGS=$(INCLUDES) -g -O2 -Wall -fPIC --std=c++0x -DBOOST_SYSTEM_NO_DEPRECATED
 MEXFLAGS=$(INCLUDES) -g
 LDFLAGS=-ldl -lxml2 -L$(BOOST_PATH)/lib -lboost_filesystem -lboost_system -lboost_regex -lrt #-Wl,-R$(MATLAB_PATH)/bin/glnxa64 -L$(MATLAB_PATH)/bin/glnxa64 -lmx -lmat -leng
 
-SRCFILES_C=src/Session.C src/mathinterface.C src/Offline_Engine.C src/Octave_Engine.C
-SRCFILES_MEX=src/mathinterfaceFunc.cpp
+SRCFILES_C=src/Session.C src/matwlib.C src/Offline_Engine.C src/Octave_Engine.C
+SRCFILES_MEX=src/matwlibFunc.cpp
 TESTFILES_C=
 TESTFILES_CPP=tests/cvx_test.cpp tests/sfo_test.cpp
 #tests/test_lib_Eigen.C
@@ -51,9 +51,9 @@ OBJ_TESTS = $(subst .C,.o,$(subst tests/,output/, $(TESTFILES)))
 OBJ_MEX = $(subst .cpp,.mexa64,$(subst src/,output/, $(SRCFILES_MEX)))
 
 ################## Compilation ##################
-all: libmathinterface.a libmathinterface.so $(OBJ_MEX)
+all: libmatwlib.a libmatwlib.so $(OBJ_MEX)
 clean:
-	rm -f output/*.o output/*.mexa64 libmathinterface.a libmathinterface.so
+	rm -f output/*.o output/*.mexa64 libmatwlib.a libmatwlib.so
 
 # Common compilation
 output/%.o: src/%.C
@@ -65,9 +65,9 @@ output/%.o: tests/%.cpp
 output/%.mexa64: src/%.cpp
 	$(MEX) $(MEXFLAGS) $(LDFLAGS) -output $@ $<
 
-libmathinterface.so: $(OBJ)
+libmatwlib.so: $(OBJ)
 	$(CXX) $(LDFLAGS) -shared -o $@ $^
-libmathinterface.a: $(OBJ)
+libmatwlib.a: $(OBJ)
 	ar rcs $@ $^
 	ranlib $@ 
 
@@ -76,13 +76,13 @@ libmathinterface.a: $(OBJ)
 # Applications
 APPLICATION=executeOffline.C
 apps: all $(APPLICATION)
-	$(CXX) $(CFLAGS) -o executeOffline executeOffline.C -L. -lmathinterface $(LDFLAGS)
+	$(CXX) $(CFLAGS) -o executeOffline executeOffline.C -L. -lmatwlib $(LDFLAGS)
 
 #Tests
 testsfilesC: $(TESTFILES_C) $(OBJ_TESTS)
-	$(CXX) $(CFLAGS) -o $(notdir $(subst .C,,$<)) $< -L. -lmathinterface $(LDFLAGS)
+	$(CXX) $(CFLAGS) -o $(notdir $(subst .C,,$<)) $< -L. -lmatwlib $(LDFLAGS)
 testsfilesCPP: $(TESTFILES_CPP) $(OBJ_TESTS)
-	$(CXX) $(CFLAGS) -o $(notdir $(subst .cpp,,$<)) $< -L. -lmathinterface $(LDFLAGS)
+	$(CXX) $(CFLAGS) -o $(notdir $(subst .cpp,,$<)) $< -L. -lmatwlib $(LDFLAGS)
 tests: all testsfilesC testsfilesCPP
 
 # DO NOT DELETE THIS LINE -- make depend needs it

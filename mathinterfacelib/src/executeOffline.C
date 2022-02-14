@@ -8,13 +8,13 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "mathinterfacelib.h"
+#include "matwlib.h"
 #include "Offline_Engine.h"
 
 using namespace std;
 using namespace boost;
 using boost::lexical_cast;
-using namespace MathInterfaceLib;
+using namespace MatWLib;
 
 //"matlab" must be accessible from $PATH
 
@@ -66,7 +66,7 @@ template<class T> T *getValues(const char *str, size_t m, size_t n) {
                       try {
                            v = lexical_cast<T>(substr);
                       } catch(bad_lexical_cast &) {
-                              throw MathInterfacelibException("Unable to decode value.");
+                              throw MatWlibException("Unable to decode value.");
                       }
                       mat[elemIndex++] = v;
                    }
@@ -310,7 +310,7 @@ int main(int argc, char *argv[]) {
                      m = lexical_cast<double>(mProp);
                      n = lexical_cast<double>(nProp);
                  } catch(bad_lexical_cast &) {
-                         throw MathInterfacelibException("Unable to decode double.");
+                         throw MatWlibException("Unable to decode double.");
                  }
                //Compute results
                  xmlNodePtr resNode = NULL;
@@ -318,7 +318,7 @@ int main(int argc, char *argv[]) {
                   case SessionCmd::TYPE_DOUBLE:
                      {
                        double *val = getValues<double>((const char *) valueProp, m, n);
-                       #ifdef MATHINTERFACELIB_DEBUG
+                       #ifdef MATWLIB_DEBUG
                            cout << "Writing double array (" << m << ", " << n << ") '" << (const char *) varNameProp << "' [";
                            for(size_t mI = 0; mI < m; mI++) {
                                for(size_t nI = 0; nI < n; nI++)
@@ -339,7 +339,7 @@ int main(int argc, char *argv[]) {
                   case SessionCmd::TYPE_SIZET:
                      {
                        size_t *val = getValues<size_t>((const char *) valueProp, m, n);
-                       #ifdef MATHINTERFACELIB_DEBUG
+                       #ifdef MATWLIB_DEBUG
                            cout << "Writing size_t array (" << m << ", " << n << ") '" << (const char *) varNameProp << "' [";
                            for(size_t mI = 0; mI < m; mI++) {
                                for(size_t nI = 0; nI < n; nI++)

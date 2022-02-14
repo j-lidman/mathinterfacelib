@@ -13,7 +13,7 @@ using namespace boost::filesystem;
 using boost::lexical_cast;
 using namespace std;
 
-namespace MathInterfaceLib {
+namespace MatWLib {
    Offline_State *init_offline_engine(std::string path) {
       //Does document exist?
         boost::filesystem::path pStatFile(path);
@@ -22,10 +22,10 @@ namespace MathInterfaceLib {
             //Open document
               xmlDocPtr doc;
               if((doc = xmlReadFile(path.c_str(), NULL, 0)) == NULL)
-                 throw MathInterfacelibException("Unable to open file");
+                 throw MatWlibException("Unable to open file");
               xmlNode *root = xmlDocGetRootElement(doc);
-              if( xmlStrcmp(root->name, (const xmlChar *) "MATHINTERFACELIB_OFFLINE") )
-                 throw MathInterfacelibException("Invalid root node name, expected 'MATHINTERFACELIB_OFFLINE'");
+              if( xmlStrcmp(root->name, (const xmlChar *) "MATWLIB_OFFLINE") )
+                 throw MatWlibException("Invalid root node name, expected 'MATWLIB_OFFLINE'");
             //Construct node<->ID map  
               map<size_t, xmlNodePtr> nodeIdMap, resultNodeMap;
               for(xmlNode *childNode = root->children; childNode; childNode = childNode->next)
@@ -34,23 +34,23 @@ namespace MathInterfaceLib {
                        size_t opId;
                        xmlChar *propText = xmlGetProp(childNode, (const xmlChar *) "id");
                        if(propText == NULL)
-                          throw MathInterfacelibException("Missing op index property.");
+                          throw MatWlibException("Missing op index property.");
                        try {
                            opId = lexical_cast<size_t>(propText);
                        } catch(bad_lexical_cast &) {
-                           throw MathInterfacelibException("Invalid op index, expected a integer.");
+                           throw MatWlibException("Invalid op index, expected a integer.");
                        }
                        xmlFree(propText);
                      //Add mapping
                        if(nodeIdMap.find(opId) != nodeIdMap.end())
-                          throw MathInterfacelibException("Invalid file, can't have multiple nodes with same id");
+                          throw MatWlibException("Invalid file, can't have multiple nodes with same id");
                        nodeIdMap[opId] = childNode;
                      //Is there a result node?
                        for(xmlNode *resNode = childNode->children; resNode; resNode = resNode->next)
                            if( (resNode->type == XML_ELEMENT_NODE) &&
                                !xmlStrcmp(resNode->name, (const xmlChar *) "RESULT") ) {
                                  resultNodeMap[opId] = resNode;
-                                 #ifdef MATHINTERFACELIB_DEBUG
+                                 #ifdef MATWLIB_DEBUG
                                     cout << "Found result for '" << opId << "'" << endl;
                                  #endif
                            }
@@ -62,7 +62,7 @@ namespace MathInterfaceLib {
            #ifdef USE_XML
             //Create document
               xmlDocPtr doc = xmlNewDoc(BAD_CAST "1.0");
-              xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "MATHINTERFACELIB_OFFLINE");
+              xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "MATWLIB_OFFLINE");
               xmlDocSetRootElement(doc, root);
 
             return new Offline_State(true, path, doc, root);
@@ -78,7 +78,7 @@ namespace MathInterfaceLib {
            xmlCleanupParser();
          #endif
       } else {
-         #ifdef MATHINTERFACELIB_DEBUG
+         #ifdef MATWLIB_DEBUG
             cout << "Doc hasn't changed!" << endl;
          #endif
       }
@@ -90,23 +90,23 @@ namespace MathInterfaceLib {
    }
 
 
-   size_t  MathInterfaceLib::Offline_State::getNewOpdId() {return this->opId++;}
+   size_t  MatWLib::Offline_State::getNewOpdId() {return this->opId++;}
 
    #ifdef USE_XML
-      MathInterfaceLib::Offline_State::Offline_State(bool docChanged_, std::string fName_, xmlDocPtr doc_, xmlNodePtr rootNode_, std::map<size_t, xmlNodePtr> &nodeIdMap_, std::map<size_t, xmlNodePtr> &resultNodeMap_)
+      MatWLib::Offline_State::Offline_State(bool docChanged_, std::string fName_, xmlDocPtr doc_, xmlNodePtr rootNode_, std::map<size_t, xmlNodePtr> &nodeIdMap_, std::map<size_t, xmlNodePtr> &resultNodeMap_)
         : opId(0), docChanged(docChanged_), fName(fName_), doc(doc_), rootNode(rootNode_), 
           nodeIdMap(nodeIdMap_), resultNodeMap(resultNodeMap_) {}
-      MathInterfaceLib::Offline_State::Offline_State(bool docChanged_, std::string fName_, xmlDocPtr doc_, xmlNodePtr rootNode_) 
+      MatWLib::Offline_State::Offline_State(bool docChanged_, std::string fName_, xmlDocPtr doc_, xmlNodePtr rootNode_) 
         : opId(0), docChanged(docChanged_), fName(fName_), doc(doc_), rootNode(rootNode_) {}
-      MathInterfaceLib::Offline_State::~Offline_State() {}
-      bool MathInterfaceLib::Offline_State::good() const {return (this->doc != NULL);}
-      bool MathInterfaceLib::Offline_State::hasDocChanged() const {return docChanged;}
-      xmlNodePtr MathInterfaceLib::Offline_State::getRootNode() {return this->rootNode;}
-      xmlDocPtr MathInterfaceLib::Offline_State::getDoc() {return this->doc;}
-      void MathInterfaceLib::Offline_State::insertNode(size_t opId, xmlNodePtr node) {
+      MatWLib::Offline_State::~Offline_State() {}
+      bool MatWLib::Offline_State::good() const {return (this->doc != NULL);}
+      bool MatWLib::Offline_State::hasDocChanged() const {return docChanged;}
+      xmlNodePtr MatWLib::Offline_State::getRootNode() {return this->rootNode;}
+      xmlDocPtr MatWLib::Offline_State::getDoc() {return this->doc;}
+      void MatWLib::Offline_State::insertNode(size_t opId, xmlNodePtr node) {
          if(nodeIdMap.find(opId) == nodeIdMap.end()) {
             if(xmlAddChild(getRootNode(), node) == NULL)
-               throw MathInterfacelibException("Unable to add write-var child");
+               throw MatWlibException("Unable to add write-var child");
          } else {
             if(resultNodeMap.find(opId) != resultNodeMap.end()) {
                xmlUnlinkNode(resultNodeMap.at(opId));
@@ -119,7 +119,7 @@ namespace MathInterfaceLib {
          this->docChanged = true;
       }
 
-      char *MathInterfaceLib::Offline_State::getResult(size_t opId) {
+      char *MatWLib::Offline_State::getResult(size_t opId) {
          if(resultNodeMap.find(opId) == resultNodeMap.end())
             return NULL;
          else {
@@ -130,20 +130,20 @@ namespace MathInterfaceLib {
                return (char *) xmlGetProp(node, (const xmlChar *) "Value");
          }
       }
-      void MathInterfaceLib::Offline_State::addResult(size_t opId, xmlNodePtr node) {
+      void MatWLib::Offline_State::addResult(size_t opId, xmlNodePtr node) {
          if(nodeIdMap.find(opId) == nodeIdMap.end())
-            throw MathInterfacelibException("Can't add result, command node is missing");
+            throw MatWlibException("Can't add result, command node is missing");
          if(resultNodeMap.find(opId) == resultNodeMap.end()) {
             if(xmlAddChild(nodeIdMap.at(opId), node) == NULL)
-               throw MathInterfacelibException("Unable to add result node to command node");
+               throw MatWlibException("Unable to add result node to command node");
             resultNodeMap[opId] = node;
             this->docChanged = true;
          } else
-           throw MathInterfacelibException("Result node is already assigned");
+           throw MatWlibException("Result node is already assigned");
       }
-      void MathInterfaceLib::Offline_State::remResult(size_t opId) {
+      void MatWLib::Offline_State::remResult(size_t opId) {
          if(nodeIdMap.find(opId) == nodeIdMap.end())
-            throw MathInterfacelibException("Can't remove result, command node is missing");
+            throw MatWlibException("Can't remove result, command node is missing");
          if(resultNodeMap.find(opId) != resultNodeMap.end()) {
             xmlUnlinkNode(resultNodeMap.at(opId));
             xmlFreeNode(resultNodeMap.at(opId));
@@ -151,13 +151,13 @@ namespace MathInterfaceLib {
             resultNodeMap.erase(resultNodeMap.find(opId));
             this->docChanged = true;
          } else
-            throw MathInterfacelibException("Result node doesn't exist");
+            throw MatWlibException("Result node doesn't exist");
       }
-      std::map<size_t, xmlNodePtr> &MathInterfaceLib::Offline_State::getNodeMap() {return nodeIdMap;}
-      std::map<size_t, xmlNodePtr> &MathInterfaceLib::Offline_State::getNodeResultMap() {return resultNodeMap;}
+      std::map<size_t, xmlNodePtr> &MatWLib::Offline_State::getNodeMap() {return nodeIdMap;}
+      std::map<size_t, xmlNodePtr> &MatWLib::Offline_State::getNodeResultMap() {return resultNodeMap;}
    #endif
-   std::string MathInterfaceLib::Offline_State::getFName() const {return this->fName;}
-   std::string MathInterfaceLib::Offline_State::toString() const {return "Offline State";}
+   std::string MatWLib::Offline_State::getFName() const {return this->fName;}
+   std::string MatWLib::Offline_State::toString() const {return "Offline State";}
 
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -460,7 +460,7 @@ namespace MathInterfaceLib {
 
             stringstream ss;
             ss << "Unable to read string-variable '" << varName << "'";
-            throw MathInterfacelibException(ss.str());
+            throw MatWlibException(ss.str());
          /*} else {
             std::string s = std::string(data);
             xmlFree(data);
@@ -480,17 +480,17 @@ namespace MathInterfaceLib {
             xmlNewProp(rNode, BAD_CAST "Type", BAD_CAST "TYPE_DOUBLE");
             xmlNewProp(rNode, BAD_CAST "VarName", BAD_CAST varName.c_str()); 
             if(xmlAddChild(this->getRootNode(), rNode) == NULL)
-               throw MathInterfacelibException("Unable to add read-var child");
+               throw MatWlibException("Unable to add read-var child");
 
             stringstream ss;
             ss << "Unable to read double-variable '" << varName << "'";
-            throw MathInterfacelibException(ss.str());
+            throw MatWlibException(ss.str());
          /*} else {
             double d;
             try {
                  d = lexical_cast<double>(data);
             } catch(bad_lexical_cast &) {
-                    throw MathInterfacelibException("Unable to decode double.");
+                    throw MatWlibException("Unable to decode double.");
             }
             xmlFree(data);
             return d;
@@ -509,17 +509,17 @@ namespace MathInterfaceLib {
             xmlNewProp(rNode, BAD_CAST "Type", BAD_CAST "TYPE_SIZET");
             xmlNewProp(rNode, BAD_CAST "VarName", BAD_CAST varName.c_str()); 
             if(xmlAddChild(this->getRootNode(), rNode) == NULL)
-               throw MathInterfacelibException("Unable to add read-var child");
+               throw MatWlibException("Unable to add read-var child");
 
             stringstream ss;
             ss << "Unable to read size_t-variable '" << varName << "'";
-            throw MathInterfacelibException(ss.str());
+            throw MatWlibException(ss.str());
          /*} else {
             size_t i;
             try {
                  i = lexical_cast<size_t>(data);
             } catch(bad_lexical_cast &) {
-                    throw MathInterfacelibException("Unable to decode double.");
+                    throw MatWlibException("Unable to decode double.");
             }
             xmlFree(data);
             return i;
@@ -540,24 +540,24 @@ namespace MathInterfaceLib {
             xmlNewProp(rNode, BAD_CAST "Type", BAD_CAST "TYPE_DOUBLE");
             xmlNewProp(rNode, BAD_CAST "VarName", BAD_CAST varName.c_str()); 
             if(xmlAddChild(this->getRootNode(), rNode) == NULL)
-               throw MathInterfacelibException("Unable to add read-var child");
+               throw MatWlibException("Unable to add read-var child");
 
             stringstream ss;
             ss << "Unable to read double-array '" << varName << "'";
-            throw MathInterfacelibException(ss.str());
+            throw MatWlibException(ss.str());
          /*} else {
             //Get matrix size
               xmlNodePtr resNode = getNodeResultMap().at(opId);  
               if( (xmlHasProp(resNode, (const xmlChar *) "m") == NULL) ||
                   (xmlHasProp(resNode, (const xmlChar *) "n") == NULL) )
-                   throw MathInterfacelibException("Result node for read-var is missing 'm' or 'n' attributes");
+                   throw MatWlibException("Result node for read-var is missing 'm' or 'n' attributes");
               xmlChar *mProp = xmlGetProp(resNode, (const xmlChar *) "m"),
                       *nProp = xmlGetProp(resNode, (const xmlChar *) "n");
               try {
                    szDims.push_back( lexical_cast<size_t>(mProp) );
                    szDims.push_back( lexical_cast<size_t>(nProp) );
               } catch(bad_lexical_cast &) {
-                   throw MathInterfacelibException("Invalid matrix size, expected integers.");
+                   throw MatWlibException("Invalid matrix size, expected integers.");
               }
               xmlFree(mProp);
               xmlFree(nProp);
@@ -578,7 +578,7 @@ namespace MathInterfaceLib {
                                  try {
                                       d = lexical_cast<double>(substr);
                                  } catch(bad_lexical_cast &) {
-                                         throw MathInterfacelibException("Unable to decode double.");
+                                         throw MatWlibException("Unable to decode double.");
                                  }
                                  mat[elemIndex++] = d;
                               }
@@ -604,24 +604,24 @@ namespace MathInterfaceLib {
             xmlNewProp(rNode, BAD_CAST "Type", BAD_CAST "TYPE_SIZET");
             xmlNewProp(rNode, BAD_CAST "VarName", BAD_CAST varName.c_str()); 
             if(xmlAddChild(this->getRootNode(), rNode) == NULL)
-               throw MathInterfacelibException("Unable to add read-var child");
+               throw MatWlibException("Unable to add read-var child");
 
             stringstream ss;
             ss << "Unable to read size_t-array '" << varName << "'";
-            throw MathInterfacelibException(ss.str());
+            throw MatWlibException(ss.str());
          /*} else {
             //Get matrix size
               xmlNodePtr resNode = getNodeResultMap().at(opId);  
               if( (xmlHasProp(resNode, (const xmlChar *) "m") == NULL) ||
                   (xmlHasProp(resNode, (const xmlChar *) "n") == NULL) )
-                   throw MathInterfacelibException("Result node for read-var is missing 'm' or 'n' attributes");
+                   throw MatWlibException("Result node for read-var is missing 'm' or 'n' attributes");
               xmlChar *mProp = xmlGetProp(resNode, (const xmlChar *) "m"),
                       *nProp = xmlGetProp(resNode, (const xmlChar *) "n");
               try {
                    szDims.push_back( lexical_cast<size_t>(mProp) );
                    szDims.push_back( lexical_cast<size_t>(nProp) );
               } catch(bad_lexical_cast &) {
-                   throw MathInterfacelibException("Invalid matrix size, expected integers.");
+                   throw MatWlibException("Invalid matrix size, expected integers.");
               }
               xmlFree(mProp);
               xmlFree(nProp);
@@ -642,7 +642,7 @@ namespace MathInterfaceLib {
                                  try {
                                       i = lexical_cast<size_t>(substr);
                                  } catch(bad_lexical_cast &) {
-                                         throw MathInterfacelibException("Unable to decode double.");
+                                         throw MatWlibException("Unable to decode double.");
                                  }
                                  mat[elemIndex++] = i;
                               }
@@ -709,7 +709,7 @@ namespace MathInterfaceLib {
          xmlNewProp(eNode, BAD_CAST "id", BAD_CAST ssId.str().c_str()); 
          xmlNewProp(eNode, BAD_CAST "Cmd", BAD_CAST cmd.c_str()); 
          if(xmlAddChild(getRootNode(), eNode) == NULL)
-            throw MathInterfacelibException("Unable to add execute child");
+            throw MatWlibException("Unable to add execute child");
      }
 }
 
