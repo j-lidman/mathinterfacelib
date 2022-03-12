@@ -48,12 +48,6 @@ namespace MathInterfaceLib {
            pathLibMX = "libmx.so";
            pathLibMat = "libmat.so";
         }
-        /*if((extint->handleEng = dlopen("/home/jacob/Tools/MATLAB/R2012a/bin/glnxa64/libeng.so", RTLD_LAZY)) == NULL)
-           throw MathInterfacelibException("Unable to load '" + pathLibEng + "'");
-        if((extint->handleMX = dlopen("/home/jacob/Tools/MATLAB/R2012a/bin/glnxa64/libmx.so", RTLD_LAZY)) == NULL)
-           throw MathInterfacelibException("Unable to load '" + pathLibMX + "'");
-        if((extint->handleMat = dlopen("/home/jacob/Tools/MATLAB/R2012a/bin/glnxa64/libmat.so", RTLD_LAZY)) == NULL)
-           throw MathInterfacelibException("Unable to load '" + pathLibMat + "'");*/
         if((extint->handleEng = dlopen(pathLibEng.c_str(), RTLD_LAZY)) == NULL)
            throw MathInterfacelibException("Unable to load '" + pathLibEng + "'");
         if((extint->handleMX = dlopen(pathLibMX.c_str(), RTLD_LAZY)) == NULL)
@@ -112,9 +106,9 @@ namespace MathInterfaceLib {
 
       //Initialize engine
         Engine *eng = NULL;
-        std::string //startCmd = ""; //Use default path
-                    startCmd = "setenv LD_PRELOAD /usr/lib/x86_64-linux-gnu/libstdc++.so.6; " + path + "/MATLAB"; //Pre-load system libctdc++
-                    //startCmd = "MATLAB_JAVA=/home/jacob/Tools/MATLAB/R2012a/sys/java/jre/glnx64/jre " + path + "/MATLAB -desktop -nosplash"; //Debugging
+        std::string startCmd = ""; //Use default path
+                    //startCmd = "setenv LD_PRELOAD /usr/lib/x86_64-linux-gnu/libstdc++.so.6; " + path + "/MATLAB"; //Pre-load system libctdc++
+                    //startCmd = "MATLAB_JAVA=" MATLAB_PATH "/sys/java/jre/glnx64/jre " + path + "/MATLAB -desktop -nosplash"; //Debugging
 
         char *cStartCmd = new char[startCmd.size()+1];
         for(size_t i = 0; i < startCmd.size(); i++)

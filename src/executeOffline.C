@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
         exit(3);
      }
    //Execute
-     State *sExec = init_engine(ENGINE_MATLAB, "/home/jacob/Tools/MATLAB/R2012a/bin/glnxa64");
+     State *sExec = init_engine(ENGINE_MATLAB, MATLAB_PATH "/bin/glnxa64");
      
      size_t m, n;
      for(size_t i = startId; i <= endId; i++)

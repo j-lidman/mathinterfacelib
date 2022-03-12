@@ -329,7 +329,7 @@ int main(int argc, char *argv[]) {
      #if defined(HAS_MATLAB)
       {
         cout << "Testing MATLAB engine..." << endl;
-        State *s = init_engine(MathInterfaceLib::ENGINE_MATLAB, "/home/jacob/Tools/MATLAB/R2017a/bin/glnxa64");
+        State *s = init_engine(MathInterfaceLib::ENGINE_MATLAB, MATLAB_PATH "/bin/glnxa64");
         rc = basic_statetest<MATLAB_State>(dynamic_cast<MATLAB_State *>(s), false);
         if(rc != 0)
            return rc;
